@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link
+      href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+  </head>
+  <body>
+    <h1>Segmenting images using the MediaPipe Image Segmentation Task</h1>
+
+<section id="demos" class="invisible">
+  <h2>Demo: Segmenting Images</h2>
+  <p><b>Click on an image below</b> to see its Segmentation.</p>
+  <div class="segmentOnClick">
+    <canvas class="removed"></canvas>
+    <img src="https://assets.codepen.io/9177687/dog_flickr_publicdomain.jpeg" crossorigin="anonymous" title="Click to get segmentation!" />
+        <p class="classification removed">
+  </div>
+  <div class="segmentOnClick">
+    <canvas class="removed"></canvas>
+    <img src="https://assets.codepen.io/9177687/cat_flickr_publicdomain.jpeg" crossorigin="anonymous" title="Click to get segmentation!" />
+        <p class="classification removed">
+  </div>
+
+  <h2>Demo: Webcam continuous segmentation</h2>
+  <p>Hold some objects up close to your webcam to get real-time segmentation.</br>Click <b>enable webcam</b> below and grant access to the webcam if prompted.</p>
+
+  <div class="webcam">
+    <button id="webcamButton" class="mdc-button mdc-button--raised">
+      <span class="mdc-button__ripple"></span>
+      <span class="mdc-button__label">ENABLE WEBCAM</span>
+    </button>
+    <video id="webcam" autoplay style="display: none;"></video>
+    <canvas id="canvas" width="1280px" height="720px"></canvas>
+  </div>
+  <div id="color-controls" style="margin-top: 20px;">
+  <p>اختر لون الشعر:</p>
+  <button onclick="changeColor([139, 69, 19, 200])" style="background: #8B4513; color: white;">بني</button>
+  <button onclick="changeColor([255, 0, 0, 180])" style="background: red; color: white;">أحمر</button>
+  <button onclick="changeColor([255, 215, 0, 150])" style="background: #FFD700;">أشقر</button>
+  <button onclick="changeColor([75, 0, 130, 180])" style="background: #4B0082; color: white;">بنفسجي</button>
+  <button onclick="changeColor([0, 0, 0, 220])" style="background: black; color: white;">أسود</button>
+</div>
+</section>
+<script src="./js/main.js" type="module"></script>
+  </body>
+</html>
