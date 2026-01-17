@@ -1,58 +1,132 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link rel="stylesheet" href="./css/style.css">
-    <link
-      href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css"
-      rel="stylesheet"
-    />
-    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    <title>تطبيق تغيير لون الشعر AI</title>
+    <style>
+        .picker-wrapper {
+    position: relative;
+    width: 300px; /* عرض شريط الألوان */
+    margin: 20px auto;
+    overflow: hidden;
+}
+
+.color-slider {
+    display: flex;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    padding: 10px 130px; /* حشو جانبي لجعل أول وآخر لون يصل للمنتصف */
+    gap: 20px;
+    scrollbar-width: none; /* إخفاء شريط التمرير في فايرفوكس */
+}
+
+.color-slider::-webkit-scrollbar { display: none; } /* إخفاء شريط التمرير في كروم */
+
+.color-item {
+    min-width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    scroll-snap-align: center;
+    border: 3px solid white;
+    transition: transform 0.3s;
+}
+
+.selection-indicator {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 70px;
+    border: 2px solid gold;
+    border-radius: 10px;
+    pointer-events: none;
+    z-index: 10;
+}
+      body {
+        font-family: sans-serif;
+        text-align: center;
+        background: #1a1a1a;
+        color: white;
+      }
+      .container {
+        position: relative;
+        display: inline-block;
+      }
+      video,
+      canvas {
+        border-radius: 15px;
+        width: 640px;
+        height: 480px;
+      }
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+      }
+      .controls {
+        margin-top: 20px;
+        padding: 20px;
+        background: #333;
+        border-radius: 10px;
+        display: inline-block;
+      }
+      .palette {
+        margin-bottom: 15px;
+      }
+      .color-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid white;
+        cursor: pointer;
+        margin: 0 5px;
+      }
+      .slider-container {
+        margin-top: 10px;
+      }
+      #webcamButton {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+      }
+    </style>
   </head>
   <body>
-    <h1>Segmenting images using the MediaPipe Image Segmentation Task</h1>
+    <h1>محاكي صبغة الشعر الذكي</h1>
 
-<section id="demos" class="invisible">
-  <h2>Demo: Segmenting Images</h2>
-  <p><b>Click on an image below</b> to see its Segmentation.</p>
-  <div class="segmentOnClick">
-    <canvas class="removed"></canvas>
-    <img src="https://assets.codepen.io/9177687/dog_flickr_publicdomain.jpeg" crossorigin="anonymous" title="Click to get segmentation!" />
-        <p class="classification removed">
-  </div>
-  <div class="segmentOnClick">
-    <canvas class="removed"></canvas>
-    <img src="https://assets.codepen.io/9177687/cat_flickr_publicdomain.jpeg" crossorigin="anonymous" title="Click to get segmentation!" />
-        <p class="classification removed">
-  </div>
+    <div class="container">
+      <video id="webcam" autoplay playsinline></video>
+      <canvas id="output_canvas"></canvas>
+    </div>
 
-  <h2>Demo: Webcam continuous segmentation</h2>
-  <p>Hold some objects up close to your webcam to get real-time segmentation.</br>Click <b>enable webcam</b> below and grant access to the webcam if prompted.</p>
+    <div class="controls">
+      <div class="picker-wrapper">
+    <div class="selection-indicator"></div> <div class="color-slider" id="colorSlider">
+        <div class="color-item" data-color="[139, 69, 19]" style="background: #8B4513;"></div>
+        <div class="color-item" data-color="[255, 215, 0]" style="background: #FFD700;"></div>
+        <div class="color-item" data-color="[255, 0, 0]" style="background: #FF0000;"></div>
+        <div class="color-item" data-color="[75, 0, 130]" style="background: #4B0082;"></div>
+        <div class="color-item" data-color="[0, 255, 0]" style="background: #00FF00;"></div>
+        <div class="color-item" data-color="[0, 0, 255]" style="background: #0000FF;"></div>
+        <div class="color-item" data-color="[255, 105, 180]" style="background: #FF69B4;"></div>
+    </div>
+</div>س
 
-  <div class="webcam">
-    <button id="webcamButton" class="mdc-button mdc-button--raised">
-      <span class="mdc-button__ripple"></span>
-      <span class="mdc-button__label">ENABLE WEBCAM</span>
-    </button>
-    <video id="webcam" autoplay style="display: none;"></video>
-    <canvas id="canvas" width="1280px" height="720px"></canvas>
-  </div>
-  <div id="color-controls" style="margin-top: 20px;">
-  <p>اختر لون الشعر:</p>
-  <button onclick="changeColor([139, 69, 19, 200])" style="background: #8B4513; color: white;">بني</button>
-  <button onclick="changeColor([255, 0, 0, 180])" style="background: red; color: white;">أحمر</button>
-  <button onclick="changeColor([255, 215, 0, 150])" style="background: #FFD700;">أشقر</button>
-  <button onclick="changeColor([75, 0, 130, 180])" style="background: #4B0082; color: white;">بنفسجي</button>
-  <button onclick="changeColor([0, 0, 0, 220])" style="background: black; color: white;">أسود</button>
-</div>
-<div id="controls" style="margin: 20px; font-family: sans-serif;">
-  <label for="opacitySlider">قوة اللون (Opacity): </label>
-  <input type="range" id="opacitySlider" min="0" max="100" value="50">
-  <span id="opacityValue">50%</span>
-</div>
-</section>
-<script src="./js/main.js" type="module"></script>
+      <div class="slider-container">
+        <label>قوة اللون (Opacity): </label>
+        <input type="range" id="opacitySlider" min="0" max="100" value="60" />
+        <span id="opacityVal">60%</span>
+      </div>
+      <br />
+      <button id="webcamButton">تشغيل الكاميرا</button>
+    </div>
+
+    <script type="module" src="./js/main.js"></script>
   </body>
 </html>
