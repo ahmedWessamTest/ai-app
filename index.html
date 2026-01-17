@@ -47,6 +47,11 @@
   <button onclick="changeColor([75, 0, 130, 180])" style="background: #4B0082; color: white;">بنفسجي</button>
   <button onclick="changeColor([0, 0, 0, 220])" style="background: black; color: white;">أسود</button>
 </div>
+<div id="controls" style="margin: 20px; font-family: sans-serif;">
+  <label for="opacitySlider">قوة اللون (Opacity): </label>
+  <input type="range" id="opacitySlider" min="0" max="100" value="50">
+  <span id="opacityValue">50%</span>
+</div>
 </section>
 <script src="./js/main.js" type="module"></script>
   </body>

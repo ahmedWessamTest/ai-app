@@ -145,8 +145,16 @@ function callback(result) {
 
 // افترض أن عندك متغير للون المختار
 let selectedColor = [255, 0, 0, 150]; // أحمر مع شفافية
+let currentOpacity = 0.5;
+const slider = document.getElementById("opacitySlider");
+const opacityLabel = document.getElementById("opacityValue");
+
 window.changeColor = function (rgbArray) {
   selectedColor = rgbArray;
+};
+slider.oninput = function () {
+  currentOpacity = this.value / 100;
+  opacityLabel.innerText = this.value + "%";
 };
 function callbackForVideo(result) {
   // التأكد من وجود البيانات لمنع الـ Error اللي ظهرلك
@@ -167,9 +175,14 @@ function callbackForVideo(result) {
 
       // معادلة الدمج (Alpha Blending) لجعل اللون يبدو طبيعياً
       // تدمج بين اللون الأصلي (imageData) واللون المختار (selectedColor)
-      imageData[j] = selectedColor[0] * 0.5 + imageData[j] * 0.5; // R
-      imageData[j + 1] = selectedColor[1] * 0.5 + imageData[j + 1] * 0.5; // G
-      imageData[j + 2] = selectedColor[2] * 0.5 + imageData[j + 2] * 0.6; // B
+      imageData[j] =
+        selectedColor[0] * currentOpacity + imageData[j] * (1 - currentOpacity);
+      imageData[j + 1] =
+        selectedColor[1] * currentOpacity +
+        imageData[j + 1] * (1 - currentOpacity);
+      imageData[j + 2] =
+        selectedColor[2] * currentOpacity +
+        imageData[j + 2] * (1 - currentOpacity);
     }
   }
 
