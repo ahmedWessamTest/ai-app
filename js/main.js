@@ -1,7 +1,7 @@
 import {
   ImageSegmenter,
   FilesetResolver,
-} from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.2";
+} from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision";
 
 const video = document.getElementById("webcam");
 const canvasElement = document.getElementById("output_canvas");
@@ -29,13 +29,13 @@ window.updateColor = function (rgb) {
 // تحميل الموديل
 const setupSegmenter = async () => {
   const vision = await FilesetResolver.forVisionTasks(
-    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.2/wasm"
+    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm"
   );
   imageSegmenter = await ImageSegmenter.createFromOptions(vision, {
     baseOptions: {
       modelAssetPath:
         "https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_multiclass_256x256/float32/1/selfie_multiclass_256x256.tflite",
-      delegate: "GPU",
+      delegate: "CPU",
     },
     runningMode: "VIDEO",
     outputCategoryMask: true,
@@ -64,8 +64,8 @@ webcamButton.addEventListener("click", async () => {
     const constraints = {
       video: {
         facingMode: "user",
-        width: { ideal: 640 },
-        height: { ideal: 480 },
+        width: { ideal: 480 },
+        height: { ideal: 640 },
       },
     };
 
