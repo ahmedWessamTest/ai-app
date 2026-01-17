@@ -56,19 +56,24 @@
       }
       .container {
         position: relative;
-        display: inline-block;
+        width: 100%;
+        max-width: 500px; /* أو أي حجم مناسب لشاشة الموبايل */
+        margin: auto;
+        overflow: hidden;
       }
+
       video,
       canvas {
-        border-radius: 15px;
-        width: 640px;
-        height: 480px;
+        width: 100% !important;
+        height: auto !important;
+        display: block;
       }
+
       canvas {
         position: absolute;
         top: 0;
         left: 0;
-        pointer-events: none;
+        z-index: 10;
       }
       .controls {
         margin-top: 20px;

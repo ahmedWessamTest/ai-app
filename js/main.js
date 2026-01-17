@@ -84,6 +84,13 @@ webcamButton.addEventListener("click", async () => {
 
 let lastVideoTime = -1;
 async function predictWebcam() {
+  if (
+    canvasElement.width !== video.videoWidth ||
+    canvasElement.height !== video.videoHeight
+  ) {
+    canvasElement.width = video.videoWidth;
+    canvasElement.height = video.videoHeight;
+  }
   if (video.currentTime === lastVideoTime) {
     if (webcamRunning) window.requestAnimationFrame(predictWebcam);
     return;
@@ -103,42 +110,49 @@ async function predictWebcam() {
 }
 
 function processSegmentation(result) {
-  const { width, height } = result.categoryMask;
-  // رسم الصورة الأصلية من الكاميرا أولاً
-  canvasCtx.drawImage(video, 0, 0, width, height);
+  if (!result.categoryMask) return;
 
-  let imageDataObj = canvasCtx.getImageData(0, 0, width, height);
-  let pixels = imageDataObj.data;
   const mask = result.categoryMask.getAsUint8Array();
+  const width = result.categoryMask.width;
+  const height = result.categoryMask.height;
+
+  // مسح الكانفاس ورسم الفيديو الأصلي
+  canvasCtx.save();
+  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+  canvasCtx.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+
+  let imageDataObj = canvasCtx.getImageData(
+    0,
+    0,
+    canvasElement.width,
+    canvasElement.height
+  );
+  let pixels = imageDataObj.data;
 
   for (let i = 0; i < mask.length; i++) {
-    // رقم 1 في الموديل ده هو الشعر
     if (mask[i] === 1) {
+      // 1 = Hair
       const rIdx = i * 4;
 
-      // معادلة الدقة (Luminosity Blending):
-      // بنحسب سطوع البكسل الأصلي عشان نحافظ على شكل الخصلة
-      const originalR = pixels[rIdx];
-      const originalG = pixels[rIdx + 1];
-      const originalB = pixels[rIdx + 2];
+      // معادلة الدمج (Soft Light)
+      const brightness =
+        (pixels[rIdx] + pixels[rIdx + 1] + pixels[rIdx + 2]) / 3;
+      const factor = brightness / 128;
 
-      const brightness = (originalR + originalG + originalB) / 3;
-      const lightFactor = brightness / 128; // معامل الإضاءة
-
-      // دمج اللون المختار مع مراعاة تفاصيل الخصلة الأصلية
       pixels[rIdx] =
-        selectedColor[0] * lightFactor * currentOpacity +
-        originalR * (1 - currentOpacity);
+        selectedColor[0] * factor * currentOpacity +
+        pixels[rIdx] * (1 - currentOpacity);
       pixels[rIdx + 1] =
-        selectedColor[1] * lightFactor * currentOpacity +
-        originalG * (1 - currentOpacity);
+        selectedColor[1] * factor * currentOpacity +
+        pixels[rIdx + 1] * (1 - currentOpacity);
       pixels[rIdx + 2] =
-        selectedColor[2] * lightFactor * currentOpacity +
-        originalB * (1 - currentOpacity);
+        selectedColor[2] * factor * currentOpacity +
+        pixels[rIdx + 2] * (1 - currentOpacity);
     }
   }
 
   canvasCtx.putImageData(imageDataObj, 0, 0);
+  canvasCtx.restore();
 }
 const colorItems = document.querySelectorAll(".color-item");
 colorSlider.addEventListener("scroll", () => {
