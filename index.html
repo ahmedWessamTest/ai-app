@@ -3,46 +3,49 @@
   <head>
     <meta charset="UTF-8" />
     <title>تطبيق تغيير لون الشعر AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
-        .picker-wrapper {
-    position: relative;
-    width: 300px; /* عرض شريط الألوان */
-    margin: 20px auto;
-    overflow: hidden;
-}
+      .picker-wrapper {
+        position: relative;
+        width: 300px; /* عرض شريط الألوان */
+        margin: 20px auto;
+        overflow: hidden;
+      }
 
-.color-slider {
-    display: flex;
-    overflow-x: scroll;
-    scroll-snap-type: x mandatory;
-    padding: 10px 130px; /* حشو جانبي لجعل أول وآخر لون يصل للمنتصف */
-    gap: 20px;
-    scrollbar-width: none; /* إخفاء شريط التمرير في فايرفوكس */
-}
+      .color-slider {
+        display: flex;
+        overflow-x: scroll;
+        scroll-snap-type: x mandatory;
+        padding: 10px 130px; /* حشو جانبي لجعل أول وآخر لون يصل للمنتصف */
+        gap: 20px;
+        scrollbar-width: none; /* إخفاء شريط التمرير في فايرفوكس */
+      }
 
-.color-slider::-webkit-scrollbar { display: none; } /* إخفاء شريط التمرير في كروم */
+      .color-slider::-webkit-scrollbar {
+        display: none;
+      } /* إخفاء شريط التمرير في كروم */
 
-.color-item {
-    min-width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    scroll-snap-align: center;
-    border: 3px solid white;
-    transition: transform 0.3s;
-}
+      .color-item {
+        min-width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        scroll-snap-align: center;
+        border: 3px solid white;
+        transition: transform 0.3s;
+      }
 
-.selection-indicator {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 70px;
-    border: 2px solid gold;
-    border-radius: 10px;
-    pointer-events: none;
-    z-index: 10;
-}
+      .selection-indicator {
+        position: absolute;
+        left: 50%;
+        top: 0;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 70px;
+        border: 2px solid gold;
+        border-radius: 10px;
+        pointer-events: none;
+        z-index: 10;
+      }
       body {
         font-family: sans-serif;
         text-align: center;
@@ -107,16 +110,46 @@
 
     <div class="controls">
       <div class="picker-wrapper">
-    <div class="selection-indicator"></div> <div class="color-slider" id="colorSlider">
-        <div class="color-item" data-color="[139, 69, 19]" style="background: #8B4513;"></div>
-        <div class="color-item" data-color="[255, 215, 0]" style="background: #FFD700;"></div>
-        <div class="color-item" data-color="[255, 0, 0]" style="background: #FF0000;"></div>
-        <div class="color-item" data-color="[75, 0, 130]" style="background: #4B0082;"></div>
-        <div class="color-item" data-color="[0, 255, 0]" style="background: #00FF00;"></div>
-        <div class="color-item" data-color="[0, 0, 255]" style="background: #0000FF;"></div>
-        <div class="color-item" data-color="[255, 105, 180]" style="background: #FF69B4;"></div>
-    </div>
-</div>س
+        <div class="selection-indicator"></div>
+        <div class="color-slider" id="colorSlider">
+          <div
+            class="color-item"
+            data-color="[139, 69, 19]"
+            style="background: #8b4513"
+          ></div>
+          <div
+            class="color-item"
+            data-color="[255, 215, 0]"
+            style="background: #ffd700"
+          ></div>
+          <div
+            class="color-item"
+            data-color="[255, 0, 0]"
+            style="background: #ff0000"
+          ></div>
+          <div
+            class="color-item"
+            data-color="[75, 0, 130]"
+            style="background: #4b0082"
+          ></div>
+          <div
+            class="color-item"
+            data-color="[0, 255, 0]"
+            style="background: #00ff00"
+          ></div>
+          <div
+            class="color-item"
+            data-color="[0, 0, 255]"
+            style="background: #0000ff"
+          ></div>
+          <div
+            class="color-item"
+            data-color="[255, 105, 180]"
+            style="background: #ff69b4"
+          ></div>
+        </div>
+      </div>
+      س
 
       <div class="slider-container">
         <label>قوة اللون (Opacity): </label>
