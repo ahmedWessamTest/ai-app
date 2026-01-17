@@ -2,174 +2,178 @@
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <title>تطبيق تغيير لون الشعر AI</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>AI Hair Color - Pro</title>
     <style>
-      .picker-wrapper {
-        position: relative;
-        width: 300px; /* عرض شريط الألوان */
-        margin: 20px auto;
+      body {
+        font-family: sans-serif;
+        margin: 0;
+        background: #000;
+        color: #fff;
         overflow: hidden;
+        touch-action: none;
+      }
+      .app-container {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* منطقة الفيديو */
+      .video-wrapper {
+        position: relative;
+        flex: 1;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      video,
+      canvas {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      canvas {
+        z-index: 2;
+        pointer-events: none;
+      }
+
+      /* التحكم (واتساب ستايل) */
+      .ui-overlay {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+        z-index: 10;
+        padding-bottom: 20px;
+      }
+
+      .picker-container {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        margin-bottom: 20px;
+      }
+      .selection-ring {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 60px;
+        height: 60px;
+        border: 3px solid #fff;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 11;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
       }
 
       .color-slider {
         display: flex;
-        overflow-x: scroll;
-        -webkit-overflow-scrolling: touch; /* تمرير ناعم على iOS */
-        scroll-behavior: smooth;
+        overflow-x: auto;
         scroll-snap-type: x mandatory;
-        padding: 10px 130px; /* حشو جانبي لجعل أول وآخر لون يصل للمنتصف */
+        padding: 20px 50vw;
         gap: 20px;
-        scrollbar-width: none; /* إخفاء شريط التمرير في فايرفوكس */
+        scrollbar-width: none;
       }
-
       .color-slider::-webkit-scrollbar {
         display: none;
-      } /* إخفاء شريط التمرير في كروم */
-
+      }
       .color-item {
         min-width: 50px;
         height: 50px;
         border-radius: 50%;
         scroll-snap-align: center;
-        border: 3px solid white;
-        transition: transform 0.3s;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        transition: 0.2s;
       }
 
-      .selection-indicator {
-        position: absolute;
-        left: 50%;
-        top: 0;
-        transform: translateX(-50%);
-        width: 60px;
-        height: 70px;
-        border: 2px solid gold;
-        border-radius: 10px;
-        pointer-events: none;
-        z-index: 10;
-      }
-      body {
-        font-family: sans-serif;
+      .slider-box {
+        padding: 0 20px;
         text-align: center;
-        background: #1a1a1a;
-        color: white;
       }
-      .container {
-        position: relative;
-        width: 100%;
-        max-width: 500px; /* أو أي حجم مناسب لشاشة الموبايل */
-        margin: auto;
-        overflow: hidden;
+      input[type="range"] {
+        width: 80%;
+        accent-color: #fff;
       }
 
-      video,
-      canvas {
-        width: 100% !important;
-        height: auto !important;
-        display: block;
-      }
-
-      canvas {
+      #btn-start {
         position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 10;
-      }
-      .controls {
-        margin-top: 20px;
-        padding: 20px;
-        background: #333;
-        border-radius: 10px;
-        display: inline-block;
-      }
-      .palette {
-        margin-bottom: 15px;
-      }
-      .color-btn {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        border: 2px solid white;
-        cursor: pointer;
-        margin: 0 5px;
-      }
-      .slider-container {
-        margin-top: 10px;
-      }
-      #webcamButton {
-        padding: 10px 20px;
-        font-size: 16px;
-        cursor: pointer;
-        background: #007bff;
-        color: white;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 15px 30px;
+        background: #fff;
+        color: #000;
         border: none;
-        border-radius: 5px;
+        border-radius: 25px;
+        font-weight: bold;
+        z-index: 20;
       }
     </style>
-    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
-    <script>
-      // تشغيل لوحة التحكم فوراً
-      var vConsole = new window.VConsole();
-    </script>
   </head>
   <body>
-    <h1>محاكي صبغة الشعر الذكي</h1>
+    <div class="app-container">
+      <button id="btn-start" disabled>جار التحميل</button>
 
-    <div class="container">
-      <video id="webcam" autoplay playsinline muted></video>
-      <canvas id="output_canvas"></canvas>
-    </div>
+      <div class="video-wrapper">
+        <video id="webcam" autoplay playsinline muted></video>
+        <canvas id="output_canvas"></canvas>
+      </div>
 
-    <div class="controls">
-      <div class="picker-wrapper">
-        <div class="selection-indicator"></div>
-        <div class="color-slider" id="colorSlider">
-          <div
-            class="color-item"
-            data-color="[139, 69, 19]"
-            style="background: #8b4513"
-          ></div>
-          <div
-            class="color-item"
-            data-color="[255, 215, 0]"
-            style="background: #ffd700"
-          ></div>
-          <div
-            class="color-item"
-            data-color="[255, 0, 0]"
-            style="background: #ff0000"
-          ></div>
-          <div
-            class="color-item"
-            data-color="[75, 0, 130]"
-            style="background: #4b0082"
-          ></div>
-          <div
-            class="color-item"
-            data-color="[0, 255, 0]"
-            style="background: #00ff00"
-          ></div>
-          <div
-            class="color-item"
-            data-color="[0, 0, 255]"
-            style="background: #0000ff"
-          ></div>
-          <div
-            class="color-item"
-            data-color="[255, 105, 180]"
-            style="background: #ff69b4"
-          ></div>
+      <div class="ui-overlay">
+        <div class="slider-box">
+          <input type="range" id="opacitySlider" min="10" max="90" value="50" />
+        </div>
+
+        <div class="picker-container">
+          <div class="selection-ring"></div>
+          <div class="color-slider" id="colorSlider">
+            <div
+              class="color-item"
+              data-color="[139, 69, 19]"
+              style="background: #8b4513"
+            ></div>
+            <div
+              class="color-item"
+              data-color="[255, 215, 0]"
+              style="background: #ffd700"
+            ></div>
+            <div
+              class="color-item"
+              data-color="[200, 0, 0]"
+              style="background: #c80000"
+            ></div>
+            <div
+              class="color-item"
+              data-color="[75, 0, 130]"
+              style="background: #4b0082"
+            ></div>
+            <div
+              class="color-item"
+              data-color="[0, 0, 0]"
+              style="background: #000000"
+            ></div>
+            <div
+              class="color-item"
+              data-color="[255, 105, 180]"
+              style="background: #ff69b4"
+            ></div>
+            <div
+              class="color-item"
+              data-color="[80, 50, 40]"
+              style="background: #503228"
+            ></div>
+          </div>
         </div>
       </div>
-      س
-
-      <div class="slider-container">
-        <label>قوة اللون (Opacity): </label>
-        <input type="range" id="opacitySlider" min="0" max="100" value="60" />
-        <span id="opacityVal">60%</span>
-      </div>
-      <br />
-      <button id="webcamButton">تشغيل الكاميرا</button>
     </div>
 
     <script type="module" src="./js/main.js"></script>
