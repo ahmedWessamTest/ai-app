@@ -45,18 +45,40 @@ const setupSegmenter = async () => {
 setupSegmenter();
 
 // تشغيل الكاميرا
+// ... (نفس التعريفات في البداية)
+
 webcamButton.addEventListener("click", async () => {
-  if (!imageSegmenter) return;
+  if (!imageSegmenter) {
+    alert("برجاء الانتظار حتى تحميل الموديل...");
+    return;
+  }
+
   if (webcamRunning) {
     webcamRunning = false;
     webcamButton.innerText = "تشغيل الكاميرا";
-    video.srcObject.getTracks().forEach((track) => track.stop());
+    if (video.srcObject) {
+      video.srcObject.getTracks().forEach((track) => track.stop());
+    }
   } else {
-    webcamRunning = true;
-    webcamButton.innerText = "إيقاف الكاميرا";
-    const constraints = { video: { width: 640, height: 480 } };
-    video.srcObject = await navigator.mediaDevices.getUserMedia(constraints);
-    video.addEventListener("loadeddata", predictWebcam);
+    // إعدادات الموبايل
+    const constraints = {
+      video: {
+        facingMode: "user",
+        width: { ideal: 640 },
+        height: { ideal: 480 },
+      },
+    };
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      video.srcObject = stream;
+      webcamRunning = true;
+      webcamButton.innerText = "إيقاف الكاميرا";
+      video.addEventListener("loadeddata", predictWebcam);
+    } catch (err) {
+      alert("خطأ: تأكد من تشغيل الموقع عبر HTTPS وإعطاء إذن الكاميرا.");
+      console.error(err);
+    }
   }
 });
 
