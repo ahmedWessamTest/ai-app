@@ -27,6 +27,7 @@ window.updateColor = function (rgb) {
 };
 
 // تحميل الموديل
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 const setupSegmenter = async () => {
   const vision = await FilesetResolver.forVisionTasks(
     "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm"
@@ -35,7 +36,7 @@ const setupSegmenter = async () => {
     baseOptions: {
       modelAssetPath:
         "https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_multiclass_256x256/float32/1/selfie_multiclass_256x256.tflite",
-      delegate: "GPU",
+      delegate: isMobile ? "CPU" : "GPU",
     },
     runningMode: "VIDEO",
     outputCategoryMask: true,
